@@ -105,7 +105,7 @@ async def oauth_callback(
             secure=cookie_secure,  
             domain=cookie_domain,
             path="/",
-            max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60
+            max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 600
         )
         return response
 
