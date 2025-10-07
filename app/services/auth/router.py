@@ -76,16 +76,23 @@ async def oauth_callback(
         user_json_string = json.dumps(auth_result['user'], default=json_serializer)
         success_url = (
             f"{settings.FRONTEND_SUCCESS_URL}?"
-            f"user={urllib.parse.quote(user_json_string)}"
+            f"user={urllib.parse.quote(user_json_string)}&"
+            f"token={auth_result['access_token']}" 
         )
         response = RedirectResponse(url=success_url)
+        is_local_dev = 'localhost' in settings.FRONTEND_SUCCESS_URL or '127.0.0.1' in settings.FRONTEND_SUCCESS_URL
+        cookie_secure = settings.FRONTEND_SUCCESS_URL.startswith("https")
+        cookie_samesite = "None" if cookie_secure else "Lax" 
+        cookie_domain = ".airh.online" if not is_local_dev else None 
+        cookie_httponly = True 
+        
         response.set_cookie(
             key="access_token",
             value=auth_result['access_token'],
-            httponly=True,
-            samesite='None',
-            secure=True,  
-            domain=".airh.online",
+            httponly=cookie_httponly, 
+            samesite=cookie_samesite,
+            secure=cookie_secure,  
+            domain=cookie_domain,
             path="/",
             max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60
         )
