@@ -80,16 +80,27 @@ async def oauth_callback(
             f"token={auth_result['access_token']}" 
         )
         response = RedirectResponse(url=success_url)
-        is_local_dev = 'localhost' in settings.FRONTEND_SUCCESS_URL or '127.0.0.1' in settings.FRONTEND_SUCCESS_URL
-        cookie_secure = settings.FRONTEND_SUCCESS_URL.startswith("https")
-        cookie_samesite = "None" if cookie_secure else "Lax" 
-        cookie_domain = ".airh.online" if not is_local_dev else None 
-        cookie_httponly = True 
         
+        # LOGIQUE DE COOKIE AMÉLIORÉE POUR LA PRODUCTION (Render)
+        is_local_dev = 'localhost' in settings.FRONTEND_SUCCESS_URL or '127.0.0.1' in settings.FRONTEND_SUCCESS_URL
+        
+        if not is_local_dev:
+            # En production (HTTPS, domaines différents) : 
+            # Secure=True et SameSite='None' sont MANDATOIRES pour les cookies cross-site.
+            cookie_secure = True
+            cookie_samesite = "None"
+            # Laissez le domaine à None pour les services hébergés comme Render (sauf si Render est configuré pour gérer le même domaine de base)
+            cookie_domain = None
+        else:
+            # En développement local (HTTP)
+            cookie_secure = False
+            cookie_samesite = "Lax" 
+            cookie_domain = None
+
         response.set_cookie(
             key="access_token",
             value=auth_result['access_token'],
-            httponly=cookie_httponly, 
+            httponly=True, 
             samesite=cookie_samesite,
             secure=cookie_secure,  
             domain=cookie_domain,
