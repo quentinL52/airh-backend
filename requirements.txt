@@ -9,4 +9,4 @@ python-jose[cryptography]
 passlib[bcrypt]
 httpx
 apscheduler
-
+asyncpg
