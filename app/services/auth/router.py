@@ -77,6 +77,7 @@ async def oauth_callback(
         success_url = (
             f"{settings.FRONTEND_SUCCESS_URL}?"
             f"user={urllib.parse.quote(user_json_string)}"
+            f"token={auth_result['access_token']}"
         )
         response = RedirectResponse(url=success_url)
         response.set_cookie(
