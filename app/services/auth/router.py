@@ -83,7 +83,7 @@ async def oauth_callback(
             key="access_token",
             value=auth_result['access_token'],
             httponly=True,
-            samesite='Lax',
+            samesite='None',
             secure=True,  
             path="/",
             max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60
