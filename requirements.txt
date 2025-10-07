@@ -10,3 +10,4 @@ passlib[bcrypt]
 httpx
 apscheduler
 asyncpg
+email-validator
