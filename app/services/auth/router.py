@@ -85,6 +85,7 @@ async def oauth_callback(
             httponly=True,
             samesite='None',
             secure=True,  
+            domain=".airh.online",
             path="/",
             max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60
         )
