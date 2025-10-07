@@ -11,3 +11,4 @@ httpx
 apscheduler
 asyncpg
 email-validator
+python-multipart
