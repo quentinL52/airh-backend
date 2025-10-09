@@ -29,4 +29,5 @@ async def send_contact_email(form_data: ContactForm):
         return {"message": "Email sent successfully via Resend", "resend_id": email.get("id")}
         
     except Exception as e:
+        print(f"RESEND ERROR: {e}") 
         raise Exception(f"Failed to send email via Resend: {e}")
