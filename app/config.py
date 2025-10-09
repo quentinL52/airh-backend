@@ -13,6 +13,7 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
 
     # Email 
+    SENDER_EMAIL: str
     GMAIL_USER: str
     GMAIL_PASSWORD: str
     RESEND_API_KEY: str

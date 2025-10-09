@@ -6,7 +6,7 @@ resend.api_key = settings.RESEND_API_KEY
 
 async def send_contact_email(form_data: ContactForm):
     receiver_email = settings.GMAIL_USER 
-    sender_email = settings.GMAIL_USER 
+    sender_email = settings.SENDER_EMAIL
     
     subject = f"Nouveau message de contact : {form_data.name} ({form_data.email})"
     body = f"""
