@@ -3,24 +3,43 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from app.config import settings
 from app.schemas.contact_schemas import ContactForm
+import resend
+resend = resend(api_key=settings.RESEND_API_KEY)
 
 async def send_contact_email(form_data: ContactForm):
     sender_email = settings.GMAIL_USER
     sender_password = settings.GMAIL_PASSWORD
     receiver_email = settings.GMAIL_USER
 
-    message = MIMEMultipart()
-    message["From"] = sender_email
-    message["To"] = receiver_email
-    message["Subject"] = f"Contact Form: {form_data.subject} from {form_data.email}"
+async def send_contact_email(form_data: ContactForm):
+    sender_email = settings.GMAIL_USER
+    sender_password = settings.GMAIL_PASSWORD
+    receiver_email = settings.GMAIL_USER
 
-    body = f"Name: {form_data.name}\nEmail: {form_data.email}\n\nMessage:\n{form_data.message}"
-    message.attach(MIMEText(body, "plain"))
+    subject = f"Nouveau message de contact : {form_data.name} ({form_data.email})"
+    body = f"""
+    Nom: {form_data.name}
+    Email: {form_data.email}
+
+    Message:
+    {form_data.message}
+    """
 
     try:
-        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
-            smtp.login(sender_email, sender_password)
-            smtp.send_message(message)
-        return {"message": "Email sent successfully"}
+        # Utilisation de l'API Resend
+        resend.emails.send({
+            "from": sender_email,
+            "to": receiver_email,
+            "subject": subject,
+            "text": body,
+        })
+        
+        # Le code d'origine renvoyait un dictionnaire, 
+        # mais la fonction est asynchrone et le router n'attend pas de retour spécifique, 
+        # on peut donc juste retourner un message de succès (ou rien).
+        return {"message": "Email sent successfully via Resend"}
+        
     except Exception as e:
-        raise Exception(f"Failed to send email: {e}")
+        # Il est important de bien typer l'exception, mais on garde la levée générale pour l'instant
+        # Le router dans router.py va attraper cette exception et renvoyer un 500
+        raise Exception(f"Failed to send email via Resend: {e}")

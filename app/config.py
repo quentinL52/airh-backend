@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     # Email 
     GMAIL_USER: str
     GMAIL_PASSWORD: str
+    RESEND_API_KEY: str
 
     # MongoDB 
     MONGO_URI: str
